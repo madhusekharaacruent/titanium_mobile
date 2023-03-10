@@ -597,6 +597,7 @@
       if ([TiUtils isIOSVersionOrGreater:@"13.0"]) {
         forceModal = [TiUtils boolValue:@"forceModal" properties:dict def:NO];
         theController.modalInPresentation = forceModal;
+        theController.modalPresentationStyle = UIModalPresentationFullScreen;
       }
       BOOL animated = [TiUtils boolValue:@"animated" properties:dict def:YES];
       [[TiApp app] showModalController:theController animated:animated];

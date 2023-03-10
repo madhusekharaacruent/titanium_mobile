@@ -158,7 +158,15 @@
     NSString *error = [NSString stringWithFormat: @"Error occurred calling next on a PLSqliteResultSet. SQLite error: '%s' for '%s'", sqlite3_errmsg(sqlite3_db_handle(_sqlite_stmt)), sqlite3_sql(_sqlite_stmt)];
     NSLog(@"[ERROR] %@", error);
 
+    if ([error containsString:@"cannot commit - no transaction is active"]) {
+        NSLog(@"[WARN] %@", @"Found error during resultset.next: cannot commit - no transaction is active. Ignoring...");
+        return NO;
+    } else if ([error containsString:@"UNIQUE constraint failed"]) {
+        NSLog(@"[WARN] %@", @"Found error during resultset.next: UNIQUE constraint failed. Ignoring...");
+        return NO;
+    } else {
     [NSException raise: TI_PLSqliteException format: @"%@", error];
+    }
 
     /* Unreachable */
     abort();

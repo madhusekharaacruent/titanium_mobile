@@ -20,11 +20,10 @@
 {
   if (store == nil) {
     store = [[EKEventStore alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChanged:) name:EKEventStoreChangedNotification object:nil];
   }
   if (store == NULL) {
     DebugLog(@"[WARN] Could not access EventStore. ");
-  } else {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChanged:) name:EKEventStoreChangedNotification object:nil];
   }
   return store;
 }
@@ -62,7 +61,7 @@
 - (void)eventStoreChanged:(NSNotification *)notification
 {
   if ([self _hasListeners:@"change"]) {
-    [self fireEvent:@"change" withDict:nil];
+    [self fireEvent:@"change" withDict:[NSMutableDictionary dictionary]];
   }
 }
 
@@ -103,6 +102,15 @@ GETTER_IMPL(NSArray<TiCalendarCalendar *> *, allCalendars, AllCalendars);
 
 - (NSArray<TiCalendarCalendar *> *)allEditableCalendars
 {
+    DebugLog(@"allEditableCalendars...");
+
+    EKEventStore* ourStore = [self store];
+
+    if (ourStore != nil) {
+        DebugLog(@"allEditableCalendars, refreshSourcesIfNecessary...");
+        [ourStore refreshSourcesIfNecessary];
+	 }
+	
   if (![NSThread isMainThread]) {
     __block id result = nil;
     TiThreadPerformOnMainThread(
@@ -113,16 +121,21 @@ GETTER_IMPL(NSArray<TiCalendarCalendar *> *, allCalendars, AllCalendars);
     return [result autorelease];
   }
 
+  DebugLog(@"allEditableCalendars, iterating allEventKitCalendars...");
   NSArray *calendars_ = [self allEventKitCalendars];
 
+  // NSMutableArray* editableCalendars = [NSMutableArray array];
   NSMutableArray<TiCalendarCalendar *> *editableCalendars = [NSMutableArray array];
   for (EKCalendar *calendar_ in calendars_) {
     if ([calendar_ allowsContentModifications]) {
+		 DebugLog(@"allEditableCalendars, adding editable calendar (loop)...");
+       // TiCalendarCalendar* calendar = [[TiCalendarCalendar alloc] _initWithPageContext:[self executionContext] calendar:calendar_ module:self];
       TiCalendarCalendar *calendar = [[TiCalendarCalendar alloc] initWithCalendar:calendar_ module:self];
       [editableCalendars addObject:calendar];
       RELEASE_TO_NIL(calendar);
     }
   }
+  DebugLog(@"allEditableCalendars, returning...");
   return editableCalendars;
 }
 GETTER_IMPL(NSArray<TiCalendarCalendar *> *, allEditableCalendars, AllEditableCalendars);
@@ -251,6 +264,7 @@ GETTER_IMPL(TiCalendarCalendar *, defaultCalendar, DefaultCalendar);
     NSLog(@"[ERROR] iOS 10 and later requires the key \"NSCalendarsUsageDescription\" inside the plist in your tiapp.xml when accessing the native calendar. Please add the key and re-run the application.");
   }
 
+  // return NUMBOOL([EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent] == EKAuthorizationStatusAuthorized);
   return [self calendarAuthorization] == EKAuthorizationStatusAuthorized;
 }
 
