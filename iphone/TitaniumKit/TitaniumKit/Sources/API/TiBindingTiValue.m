@@ -238,8 +238,8 @@ JSValueRef TiBindingTiValueFromNSObject(JSContextRef jsContext, NSObject *obj)
 
   // TODO: DO WE NEED THIS?
   if (obj == 0x1 || obj == 0x4) {
-	return JSValueMakeNull(jsContext);
-  }  
+    return JSValueMakeNull(jsContext);
+  }
 
   if ([obj isKindOfClass:[NSNull class]]) {
     return JSValueMakeNull(jsContext);

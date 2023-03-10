@@ -161,16 +161,16 @@ static NSString *ARG_KEY = @"arg";
                               error:&err];
   }
 
-	 NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:3];
-    [settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
-                 forKey:(NSString *)kCFStreamSSLLevel];
-    [settings setObject:[NSNumber numberWithBool:YES]
-                 forKey:(NSString *)kCFStreamSSLAllowsAnyRoot];
-    [settings setObject:[NSNumber numberWithBool:NO]
-                 forKey:(NSString *)kCFStreamSSLValidatesCertificateChain];
-    
-    [socket startTLS:settings];
-    
+  NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithCapacity:3];
+  [settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
+               forKey:(NSString *)kCFStreamSSLLevel];
+  [settings setObject:[NSNumber numberWithBool:YES]
+               forKey:(NSString *)kCFStreamSSLAllowsAnyRoot];
+  [settings setObject:[NSNumber numberWithBool:NO]
+               forKey:(NSString *)kCFStreamSSLValidatesCertificateChain];
+
+  [socket startTLS:settings];
+
   if (err || !success) {
     internalState = SOCKET_ERROR;
     [self cleanupSocket];
@@ -179,7 +179,7 @@ static NSString *ARG_KEY = @"arg";
       NSString *message = [TiUtils messageFromError:err];
       NSMutableDictionary *event = [TiUtils dictionaryWithCode:[err code] message:message];
       [event setObject:self forKey:@"socket"];
-			[event setObject:NUMINTEGER([err code]) forKey:@"errorCode"];
+      [event setObject:NUMINTEGER([err code]) forKey:@"errorCode"];
       [self _fireEventToListener:@"error" withObject:event listener:error thisObject:self];
     }
 

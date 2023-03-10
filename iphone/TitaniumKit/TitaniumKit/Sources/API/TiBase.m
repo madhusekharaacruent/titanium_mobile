@@ -143,17 +143,17 @@ void TiExceptionThrowWithNameAndReason(NSString *exceptionName, NSString *reason
   if (TiExceptionIsSafeOnMainThread || ![NSThread isMainThread]) {
     NSDictionary *details = [NSDictionary dictionaryWithObjectsAndKeys:subreason, kTiExceptionSubreason, location, kTiExceptionLocation, nil];
     if (exceptionName != nil && [exceptionName isEqualToString:@"org.appcelerator.TiDatabaseProxy"] && reason != nil && [reason isEqualToString:@"invalid SQL statement"]) {
-      NSString * message = [NSString stringWithFormat:@"%@. %@ %@",reason,(subreason!=nil?subreason:@""),(location!=nil?location:@"")];
+      NSString *message = [NSString stringWithFormat:@"%@. %@ %@", reason, (subreason != nil ? subreason : @""), (location != nil ? location : @"")];
       NSLog(@"[ERROR] %@", message);
     } else if (exceptionName != nil && [exceptionName isEqualToString:@"org.appcelerator.TiNetworkSocketTCPProxy"]) {
-      NSString * message = [NSString stringWithFormat:@"%@. %@ %@",reason,(subreason!=nil?subreason:@""),(location!=nil?location:@"")];
+      NSString *message = [NSString stringWithFormat:@"%@. %@ %@", reason, (subreason != nil ? subreason : @""), (location != nil ? location : @"")];
       NSLog(@"[ERROR] %@", message);
     } else {
       NSLog(@"[ERROR] TiExceptionThrowWithNameAndReason, name: %@, reason: %@", exceptionName, reason);
       @throw [NSException exceptionWithName:exceptionName reason:reason userInfo:details];
     }
   } else {
-    NSString * message = [NSString stringWithFormat:@"%@. %@ %@",reason,(subreason!=nil?subreason:@""),(location!=nil?location:@"")];
+    NSString *message = [NSString stringWithFormat:@"%@. %@ %@", reason, (subreason != nil ? subreason : @""), (location != nil ? location : @"")];
     NSLog(@"[ERROR] %@", message);
   }
 }

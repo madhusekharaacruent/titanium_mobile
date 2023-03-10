@@ -20,7 +20,7 @@
 {
   if (store == nil) {
     store = [[EKEventStore alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChanged:) name:EKEventStoreChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eventStoreChanged:) name:EKEventStoreChangedNotification object:nil];
   }
   if (store == NULL) {
     DebugLog(@"[WARN] Could not access EventStore. ");
@@ -102,15 +102,15 @@ GETTER_IMPL(NSArray<TiCalendarCalendar *> *, allCalendars, AllCalendars);
 
 - (NSArray<TiCalendarCalendar *> *)allEditableCalendars
 {
-    DebugLog(@"allEditableCalendars...");
+  DebugLog(@"allEditableCalendars...");
 
-    EKEventStore* ourStore = [self store];
+  EKEventStore *ourStore = [self store];
 
-    if (ourStore != nil) {
-        DebugLog(@"allEditableCalendars, refreshSourcesIfNecessary...");
-        [ourStore refreshSourcesIfNecessary];
-	 }
-	
+  if (ourStore != nil) {
+    DebugLog(@"allEditableCalendars, refreshSourcesIfNecessary...");
+    [ourStore refreshSourcesIfNecessary];
+  }
+
   if (![NSThread isMainThread]) {
     __block id result = nil;
     TiThreadPerformOnMainThread(
@@ -128,8 +128,8 @@ GETTER_IMPL(NSArray<TiCalendarCalendar *> *, allCalendars, AllCalendars);
   NSMutableArray<TiCalendarCalendar *> *editableCalendars = [NSMutableArray array];
   for (EKCalendar *calendar_ in calendars_) {
     if ([calendar_ allowsContentModifications]) {
-		 DebugLog(@"allEditableCalendars, adding editable calendar (loop)...");
-       // TiCalendarCalendar* calendar = [[TiCalendarCalendar alloc] _initWithPageContext:[self executionContext] calendar:calendar_ module:self];
+      DebugLog(@"allEditableCalendars, adding editable calendar (loop)...");
+      // TiCalendarCalendar* calendar = [[TiCalendarCalendar alloc] _initWithPageContext:[self executionContext] calendar:calendar_ module:self];
       TiCalendarCalendar *calendar = [[TiCalendarCalendar alloc] initWithCalendar:calendar_ module:self];
       [editableCalendars addObject:calendar];
       RELEASE_TO_NIL(calendar);
