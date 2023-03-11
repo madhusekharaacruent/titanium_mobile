@@ -49,6 +49,10 @@ runs:
       run: npm run lint:android
       shell: bash
 
+    - name: Set up Homebrew
+      id: set-up-homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+
     - name: Install ccache
       run: brew install ccache
       shell: bash
