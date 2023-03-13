@@ -81,7 +81,7 @@ steps:
   displayName: 'Publish zip file as an artifact'
   inputs:
     targetPath: '$(System.DefaultWorkingDirectory)/dist/mobilesdk-$(Build.BuildNumber)-osx.zip'
-    artifact: 'mobilesdk-$(Build.BuildNumber).GA.zip'
+    artifact: 'mobilesdk-$(Build.BuildNumber).GA.SSL.zip'
     publishLocation: 'pipeline'
 
 - task: UniversalPackages@0
@@ -90,9 +90,9 @@ steps:
     publishDirectory: '$(Build.ArtifactStagingDirectory)'
     feedsToUsePublish: 'internal'
     vstsFeedPublish: '159a4be2-6a10-4946-a199-ceba2c906e34/91173f7c-449b-4969-b0f6-8b71905945d5'
-    vstsFeedPackagePublish: 'vxf-titanium-$(Build.BuildNumber).GA'
+    vstsFeedPackagePublish: 'vxf-titanium-$(Build.BuildNumber).GA.SSL'
     versionOption: 'custom'
-    versionPublish: '$(Build.BuildNumber)-GA'
-    packagePublishDescription: 'vx Field Titanium Framework $(Build.BuildNumber)-GA'
+    versionPublish: '$(Build.BuildNumber)-GASSL'
+    packagePublishDescription: 'vx Field Titanium Framework $(Build.BuildNumber).GA.SSL'
 
 
