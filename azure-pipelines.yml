@@ -1,0 +1,98 @@
+# trigger:
+#  branches:
+#    include:
+#        - main
+#  paths:
+#   include:
+#       - app/Resources/*
+
+
+# schedules:
+# - cron: "0 3 * * 1-5"
+#  displayName: iOS Daily Build
+#  branches:
+#    include: [ main ] 
+#  always: false   
+
+pool:
+  vmImage: 'macOS-12'
+
+# variables:
+#  MAINMOB: $(System.DefaultWorkingDirectory)
+#  buildPatchNumber: $[counter(variables['build.reason'], 0)]
+
+steps:
+
+- task: NodeTool@0
+  displayName: 'Install Node'
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '14.21.3'
+
+- task: Bash@3
+  displayName: 'Set Java version'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Set the right java version. The Titanium framework uses Java 11 right now:
+      echo "JAVA_HOME_17_X64: $JAVA_HOME_17_X64"
+      # export JAVA_HOME=$JAVA_HOME_17_X64
+      export JAVA_HOME=$JAVA_HOME_11_X64
+      echo "JAVA_HOME: $JAVA_HOME"
+      java -version
+
+- task: Bash@3
+  displayName: 'Java check'
+  inputs:
+    targetType: 'inline'
+    script: |
+      java -version
+
+- task: Bash@3
+  displayName: 'Build version'
+  inputs:
+    targetType: 'inline'
+    script: |
+      export TIMESTAMP=`date +'%Y%m%d%H%M%S'`
+      echo $(TIMESTAMP)
+      export build_number=$(sed -n 's/^ *"version": *"//p' package.json | tr -d '"' | tr -d ',' | tr -d '[[:space:]]')
+      echo "Build number : $build_number"
+      echo "##vso[build.updatebuildnumber]$build_number"
+
+- task: Bash@3
+  displayName: 'Build Titanium'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Set the right java version. The Titanium framework uses Java 11 right now:
+      # export JAVA_HOME=$JAVA_HOME_17_X64
+      export JAVA_HOME=$JAVA_HOME_11_X64
+      echo "JAVA_HOME: $JAVA_HOME"
+      java -version
+      cd $(System.DefaultWorkingDirectory)
+      # Install Titanium CI dependencies (node_modules)
+      npm ci
+      # Build the Titanium framework, using a clean build:
+      npm run cleanbuild
+      # List the contents of the dist folder
+      ls -al $(System.DefaultWorkingDirectory)/dist
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish zip file as an artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/dist/mobilesdk-$(Build.BuildNumber)-osx.zip'
+    artifact: 'mobilesdk-$(Build.BuildNumber).GA.zip'
+    publishLocation: 'pipeline'
+
+- task: UniversalPackages@0
+  inputs:
+    command: 'publish'
+    publishDirectory: '$(Build.ArtifactStagingDirectory)'
+    feedsToUsePublish: 'internal'
+    vstsFeedPublish: '159a4be2-6a10-4946-a199-ceba2c906e34/91173f7c-449b-4969-b0f6-8b71905945d5'
+    vstsFeedPackagePublish: 'vxf-titanium-$(Build.BuildNumber).GA'
+    versionOption: 'custom'
+    versionPublish: '$(Build.BuildNumber)-GA'
+    packagePublishDescription: 'vx Field Titanium Framework $(Build.BuildNumber)-GA'
+
+
