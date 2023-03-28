@@ -84,15 +84,22 @@ steps:
     artifact: 'mobilesdk-$(Build.BuildNumber).GA.SSL.zip'
     publishLocation: 'pipeline'
 
-- task: UniversalPackages@0
+# - task: UniversalPackages@0
+#   inputs:
+#     command: 'publish'
+#     publishDirectory: '$(Build.ArtifactStagingDirectory)'
+#     feedsToUsePublish: 'internal'
+#     vstsFeedPublish: '159a4be2-6a10-4946-a199-ceba2c906e34/91173f7c-449b-4969-b0f6-8b71905945d5'
+#     vstsFeedPackagePublish: 'vxf-titanium-$(Build.BuildNumber).GA.SSL'
+#     versionOption: 'custom'
+#     versionPublish: '$(Build.BuildNumber)-GASSL'
+#     packagePublishDescription: 'vx Field Titanium Framework $(Build.BuildNumber).GA.SSL'
+
+- task: Bash@3
   inputs:
-    command: 'publish'
-    publishDirectory: '$(Build.ArtifactStagingDirectory)'
-    feedsToUsePublish: 'internal'
-    vstsFeedPublish: '159a4be2-6a10-4946-a199-ceba2c906e34/91173f7c-449b-4969-b0f6-8b71905945d5'
-    vstsFeedPackagePublish: 'vxf-titanium-$(Build.BuildNumber).GA.SSL'
-    versionOption: 'custom'
-    versionPublish: '$(Build.BuildNumber)-GASSL'
-    packagePublishDescription: 'vx Field Titanium Framework $(Build.BuildNumber).GA.SSL'
-
-
+    targetType: 'inline'
+    script: |
+    
+      curl https://proget.accruentsystems.com/upack/vxf_core/upload/Titanium_VXF_SSL/$(Build.BuildNumber) --user progetservice@accruentsystems.com:$PROGET_PASSWORD --upload-file $(System.DefaultWorkingDirectory)/$(Build.BuildNumber).GA.SSL.zip
+  env:
+    PROGET_PASSWORD: $(Proget_Password_Secret)
