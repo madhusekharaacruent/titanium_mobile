@@ -96,6 +96,7 @@ steps:
 #     packagePublishDescription: 'vx Field Titanium Framework $(Build.BuildNumber).GA.MAINTAIN'
 
 - task: Bash@3
+  displayName: 'Publish zip file To Proget Feeds'
   inputs:
     targetType: 'inline'
     script: |
