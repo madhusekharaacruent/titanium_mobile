@@ -99,7 +99,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-    
+      ls $(System.DefaultWorkingDirectory)/
       curl https://proget.accruentsystems.com/upack/vxf_core/upload/Titanium_VXF_SSL/$(Build.BuildNumber) --user progetservice@accruentsystems.com:$PROGET_PASSWORD --upload-file $(System.DefaultWorkingDirectory)/$(Build.BuildNumber).GA.SSL.zip
   env:
     PROGET_PASSWORD: $(Proget_Password_Secret)
