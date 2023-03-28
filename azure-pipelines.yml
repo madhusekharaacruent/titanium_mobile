@@ -100,7 +100,7 @@ steps:
     targetType: 'inline'
     script: |
     
-      curl https://proget.accruentsystems.com/upack/vxf_core/upload/Titanium_MAINTAIN/$(Build.BuildNumber) --user progetservice@accruentsystems.com:$PROGET_PASSWORD --upload-file $(System.DefaultWorkingDirectory)/dist/mobilesdk-$(Build.BuildNumber)-osx.zip
+      curl https://proget.accruentsystems.com/upack/vxf_core/upload/Titanium_VXF/$(Build.BuildNumber) --user progetservice@accruentsystems.com:$PROGET_PASSWORD --upload-file $(System.DefaultWorkingDirectory)/dist/mobilesdk-$(Build.BuildNumber)-osx.zip
   env:
     PROGET_PASSWORD: $(Proget_Password_Secret)
 
